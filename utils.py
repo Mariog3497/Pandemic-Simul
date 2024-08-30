@@ -85,3 +85,37 @@ def update_data(config, infection_rate, time_t, ls_infections, total_infections,
     data.append((time_t, It, total_infections, new_deads_t, total_deaths))
     
     return ls_infections, total_deaths, data
+
+def simulate(config):
+    """
+    Simulate the spread of the infection over a specified number of days.
+    
+    Parameters:
+        config (dict): Configuration dictionary containing global variables.
+        
+    Returns:
+        pd.DataFrame: A DataFrame containing the simulation data with columns 
+                      ['Time', 'Infected_per_day', 'Total_infections', 'Deads_per_day', 'Total_Deads'].
+    """
+    # Initialize response variables
+    data, ls_infections = [], []
+    total_infections, total_deaths = 0, 0
+    
+    # Initial infection rate
+    infection_rate = np.log(config['INITIAL_R0']) / config['INFECTIVITY_TIME']
+    
+    # Simulate each day
+    for t in range(config['TOTAL_DAYS']):
+        # Update the infection rate based on the mask and vaccine conditions
+        if config['DAY_FOR_VACCINE'] >= t >= config['DAY_FOR_MASKS']:
+            infection_rate = update_infection_rate(config, config['INITIAL_R0'], config['FINAL_R0_MASK'], config['DELTA_R0'], config['DAY_FOR_MASKS'], t)
+        elif t >= config['DAY_FOR_VACCINE']:
+            infection_rate = update_infection_rate(config, config['FINAL_R0_MASK'], config['FINAL_R0_VACCINE'], config['DELTA_R0_VACCINE'], config['DAY_FOR_VACCINE'], t)
+        
+        # Update the simulation data for the current day
+        ls_infections, total_deaths, data = update_data(config, infection_rate, t, ls_infections, total_infections, total_deaths, data)
+    
+    # Convert the data into a pandas DataFrame
+    df = pd.DataFrame(data=data, columns=['Time', 'Infected_per_day', 'Total_infections', 'Deads_per_day', 'Total_Deads'])
+    
+    return df 
