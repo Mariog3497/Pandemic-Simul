@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 def update_infection_rate(config, initial_R0, final_R0, delta_R0, day, time_t):
     """
