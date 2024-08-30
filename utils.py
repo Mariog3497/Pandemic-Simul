@@ -56,3 +56,32 @@ def calculate_new_infections_deads(config, infection_rate, time_t, ls_infections
             new_deads = 0
 
     return new_infections, new_deads
+
+def update_data(config, infection_rate, time_t, ls_infections, total_infections, total_deaths, data):
+    """
+    Update the simulation data by calculating new infections and deaths, and appending the results.
+    
+    Parameters:
+        config (dict): Configuration dictionary containing global variables.
+        infection_rate (float): The current infection rate at day time_t.
+        time_t (int): The current day in the simulation.
+        ls_infections (list): A list of the number of infections per day up to time_t.
+        total_infections (int): The cumulative total number of infections up to time_t.
+        total_deaths (int): The cumulative total number of deaths up to time_t.
+        data (list): A list to store the simulation data for each day.
+        
+    Returns:
+        tuple: A tuple containing the updated list of infections, total deaths, and data.
+    """
+    # Calculate new infections and deaths for the current day
+    It, new_deads_t = calculate_new_infections_deads(config, infection_rate, time_t, ls_infections)
+        
+    # Update cumulative totals
+    total_infections += It
+    total_deaths += new_deads_t
+    
+    # Append the new data to the list
+    ls_infections.append(It)
+    data.append((time_t, It, total_infections, new_deads_t, total_deaths))
+    
+    return ls_infections, total_deaths, data
