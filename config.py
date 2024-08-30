@@ -21,3 +21,7 @@ TRANSITION_DAYS_VACCINE = 250  # Number of days over which vaccination reduces R
 # Calculated Parameters
 DELTA_R0 = (FINAL_R0_MASK - INITIAL_R0) / TRANSITION_DAYS_MASK  # Daily change in R0 due to masks
 DELTA_R0_VACCINE = (FINAL_R0_VACCINE - FINAL_R0_MASK) / TRANSITION_DAYS_VACCINE  # Daily change in R0 due to vaccination
+
+# Paths to store data
+DATA_PATH = 'data/'
+IMAGES_PATH = 'images/'
