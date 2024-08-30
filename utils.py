@@ -16,15 +16,12 @@ def update_infection_rate(config, initial_R0, final_R0, delta_R0, day, time_t):
             
     Returns:
         float: Updated infection rate at time t.
-    """
-    # Extract global variables from the config dictionary
-    INFECTIVITY_TIME = config['INFECTIVITY_TIME']
-    
+    """    
     # Gradually adjust the R0 value
     current_R0 = max(final_R0, initial_R0 + delta_R0 * (time_t - day))
     
     # Calculate the infection rate as the logarithm of R0 divided by infectivity time
-    infection_rate = np.log(current_R0) / INFECTIVITY_TIME
+    infection_rate = np.log(current_R0) / config['INFECTIVITY_TIME']
     
     return infection_rate
 
@@ -40,28 +37,22 @@ def calculate_new_infections_deads(config, infection_rate, time_t, ls_infections
         
     Returns:
         tuple: A tuple containing the number of new infections and new deaths for the day t.
-    """
-    # Extract global variables from the config dictionary
-    N_INFECTED_POP = config['N_INFECTED_POP']
-    MORTALITY_RATE = config['MORTALITY_RATE']
-    INFECTIVITY_TIME = config['INFECTIVITY_TIME']
-    TOTAL_POP = config['TOTAL_POP']
-    
+    """    
     # Calculate new infections for the current day
-    new_infections = int(N_INFECTED_POP * np.exp(infection_rate * time_t))
+    new_infections = int(config['N_INFECTED_POP'] * np.exp(infection_rate * time_t))
     
     # Calculate new deaths for the current day
-    if len(ls_infections) > INFECTIVITY_TIME:
-        new_deads = int(MORTALITY_RATE * ls_infections[time_t - INFECTIVITY_TIME])
+    if len(ls_infections) > config['INFECTIVITY_TIME']:
+        new_deads = int(config['MORTALITY_RATE'] * ls_infections[time_t - config['INFECTIVITY_TIME']])
     else:
         new_deads = 0
     
     # Adjust new infections if the total exceeds the population
-    if sum(ls_infections) + new_infections >= TOTAL_POP:
-        new_infections = TOTAL_POP - sum(ls_infections)
+    if sum(ls_infections) + new_infections >= config['TOTAL_POP']:
+        new_infections = config['TOTAL_POP'] - sum(ls_infections)
         # Adjust new deads if the total exceeds the population
-        new_deads = int(MORTALITY_RATE * ls_infections[time_t - INFECTIVITY_TIME]) if len(ls_infections) > INFECTIVITY_TIME else 0
-        if new_deads >= TOTAL_POP:
+        new_deads = int(config['MORTALITY_RATE'] * ls_infections[time_t - config['INFECTIVITY_TIME']]) if len(ls_infections) > config['INFECTIVITY_TIME'] else 0
+        if new_deads >= config['TOTAL_POP']:
             new_deads = 0
 
     return new_infections, new_deads
