@@ -119,3 +119,63 @@ def simulate(config):
     df = pd.DataFrame(data=data, columns=['Time', 'Infected_per_day', 'Total_infections', 'Deads_per_day', 'Total_Deads'])
     
     return df 
+
+
+def plot_simmulation(config, df_simmulation):
+    """
+    Plot the results of the simulation, including the number of new infections per day,
+    total infections, new deaths per day, and total deaths.
+
+    Parameters:
+        df_simmulation (pd.DataFrame): DataFrame containing the simulation results.
+
+    Returns:
+        None
+    """
+    # General figure configuration
+    plt.figure(figsize=(15, 10))
+
+    # Subplot 1: Number of new infections per day
+    plt.subplot(221)
+    plt.plot(df_simmulation['Time'], df_simmulation['Infected_per_day'], color='blue', label='New Infections')
+    plt.title('Number of New Infected People Per Day')
+    plt.xlabel('Days')
+    plt.ylabel('Number of New Infected People')
+    plt.grid(True)
+    plt.legend()
+
+    # Subplot 2: Total number of infections up to day t
+    plt.subplot(222)
+    plt.plot(df_simmulation['Time'], df_simmulation['Total_infections'], color='orange', label='Total Infections')
+    plt.title('Total Number of Infected People Up to Day t')
+    plt.xlabel('Days')
+    plt.ylabel('Total Number of Infections')
+    plt.grid(True)
+    plt.legend()
+
+    # Subplot 3: Number of new deaths per day
+    plt.subplot(223)
+    plt.plot(df_simmulation['Time'], df_simmulation['Deads_per_day'], color='red', label='New Deaths')
+    plt.title('Number of New Deaths Per Day')
+    plt.xlabel('Days')
+    plt.ylabel('Number of New Deaths')
+    plt.grid(True)
+    plt.legend()
+
+    # Subplot 4: Total number of deaths up to day t
+    plt.subplot(224)
+    plt.plot(df_simmulation['Time'], df_simmulation['Total_Deads'], color='purple', label='Total Deaths')
+    plt.title('Total Number of Deaths Up to Day t')
+    plt.xlabel('Days')
+    plt.ylabel('Total Number of Deaths')
+    plt.grid(True)
+    plt.legend()
+
+    # Adjust the spacing between subplots
+    plt.tight_layout()
+
+    # Save the figure
+    plt.savefig(config['IMAGES_PATH']+'simulation_plots.png')
+
+    # Show the figure
+    plt.show()
